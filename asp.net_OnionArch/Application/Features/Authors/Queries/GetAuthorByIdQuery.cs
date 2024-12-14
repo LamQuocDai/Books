@@ -13,18 +13,18 @@ public class GetAuthorByIdQuery : IRequest<AuthorDto>
     
     public class GetAuthorsByIdQueryHandler : IRequestHandler<GetAuthorByIdQuery, AuthorDto>
     {
-        private readonly IAuthorRepository _authorRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         
-        public GetAuthorsByIdQueryHandler(IAuthorRepository authorRepository, IMapper mapper)
+        public GetAuthorsByIdQueryHandler(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _authorRepository = authorRepository;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
         
         public async Task<AuthorDto> Handle(GetAuthorByIdQuery request, CancellationToken cancellationToken)
         {
-            var author = await _authorRepository.GetAuthorByIdAsync(request.Id, cancellationToken) ?? throw new NotFoundException(nameof(Author));
+            var author = await _unitOfWork.AuthorRepository.GetAuthorByIdAsync(request.Id, cancellationToken) ?? throw new NotFoundException(nameof(Author));
             return _mapper.Map<AuthorDto>(author);
         }
     }

@@ -13,18 +13,18 @@ public class GetBookTypeByIdQuery : IRequest<BookTypeDto>
     
     public class GetBookTypeByIdQueryHandler : IRequestHandler<GetBookTypeByIdQuery, BookTypeDto>
     {
-        private readonly IBookTypeRepository _bookTypeRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         
-        public GetBookTypeByIdQueryHandler(IBookTypeRepository bookTypeRepository, IMapper mapper)
+        public GetBookTypeByIdQueryHandler(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _bookTypeRepository = bookTypeRepository;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
         
         public async Task<BookTypeDto> Handle(GetBookTypeByIdQuery request, CancellationToken cancellationToken)
         {
-            var bookType = await _bookTypeRepository.GetBookTypeByIdAsync(request.Id, cancellationToken) ?? throw new NotFoundException(nameof(BookType));
+            var bookType = await _unitOfWork.BookTypeRepository.GetBookTypeByIdAsync(request.Id, cancellationToken) ?? throw new NotFoundException(nameof(BookType));
             return _mapper.Map<BookTypeDto>(bookType);
         }
     }

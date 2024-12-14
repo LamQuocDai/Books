@@ -6,11 +6,11 @@ namespace Application.Features.BookTypes.Validators;
 
 public class DeleteBookTypeCommandValidator : AbstractValidator<DeleteBookTypeCommand>
 {
-    private readonly IBookTypeRepository _bookTypeRepository;
+    private readonly IUnitOfWork _unitOfWork;
     
-    public DeleteBookTypeCommandValidator(IBookTypeRepository bookTypeRepository)
+    public DeleteBookTypeCommandValidator(IUnitOfWork unitOfWork)
     {
-        _bookTypeRepository = bookTypeRepository;
+        _unitOfWork = unitOfWork;
 
         RuleFor(x => x.Id).NotEmpty().WithMessage("Id is required.")
             .MustAsync(BookTypeExists).WithMessage("Book Type not found.");
@@ -18,6 +18,6 @@ public class DeleteBookTypeCommandValidator : AbstractValidator<DeleteBookTypeCo
     
     private async Task<bool> BookTypeExists(int id, CancellationToken cancellationToken)
     {
-        return await _bookTypeRepository.GetBookTypeByIdAsync(id, cancellationToken) != null;
+        return await _unitOfWork.BookTypeRepository.GetBookTypeByIdAsync(id, cancellationToken) != null;
     }
 }

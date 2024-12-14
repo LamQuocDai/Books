@@ -13,21 +13,20 @@ public class DeleteAuthorCommand : IRequest<AuthorDto>
     
     public class DeleteAuthorCommandHandler : IRequestHandler<DeleteAuthorCommand, AuthorDto>
     {
-        private readonly IAuthorRepository _authorRepository;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         
-        public DeleteAuthorCommandHandler(IAuthorRepository authorRepository, IMapper mapper, IUnitOfWork unitOfWork)
+        public DeleteAuthorCommandHandler( IMapper mapper, IUnitOfWork unitOfWork)
         {
-            _authorRepository = authorRepository;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
         }
         
         public async Task<AuthorDto> Handle(DeleteAuthorCommand request, CancellationToken cancellationToken)
         {
-            var author = await _authorRepository.GetAuthorByIdAsync(request.Id, cancellationToken) ?? throw new NotFoundException(nameof(Author));
-            await _authorRepository.DeleteAuthorByIdAsync(request.Id, cancellationToken);
+            var author = await _unitOfWork.AuthorRepository.GetAuthorByIdAsync(request.Id, cancellationToken) ?? throw new NotFoundException(nameof(Author));
+            await  _unitOfWork.AuthorRepository.DeleteAuthorByIdAsync(request.Id, cancellationToken);
+            await _unitOfWork.CompleteAsync(cancellationToken);
             return _mapper.Map<AuthorDto>(author);
         }
     }

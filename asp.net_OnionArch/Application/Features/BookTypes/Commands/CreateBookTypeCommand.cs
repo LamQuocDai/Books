@@ -13,13 +13,11 @@ public class CreateBookTypeCommand : IRequest<BookTypeDto>
     
     public class CreateBookTypeCommandHandler : IRequestHandler<CreateBookTypeCommand, BookTypeDto>
     {
-        private readonly IBookTypeRepository _bookTypeRepository;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         
-        public CreateBookTypeCommandHandler(IBookTypeRepository bookTypeRepository, IMapper mapper, IUnitOfWork unitOfWork)
+        public CreateBookTypeCommandHandler( IMapper mapper, IUnitOfWork unitOfWork)
         {
-            _bookTypeRepository = bookTypeRepository;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
         }
@@ -27,7 +25,7 @@ public class CreateBookTypeCommand : IRequest<BookTypeDto>
         public async Task<BookTypeDto> Handle(CreateBookTypeCommand request, CancellationToken cancellationToken)
         {
             var bookType = _mapper.Map<BookType>(request);
-            await _bookTypeRepository.InsertBookTypeAsync(bookType, cancellationToken);
+            await _unitOfWork.BookTypeRepository.InsertBookTypeAsync(bookType, cancellationToken);
             await _unitOfWork.CompleteAsync(cancellationToken);
             return _mapper.Map<BookTypeDto>(bookType);
         }

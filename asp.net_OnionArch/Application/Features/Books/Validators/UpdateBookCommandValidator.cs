@@ -6,15 +6,11 @@ namespace Application.Features.Books.Validators;
 
 public class UpdateBookCommandValidator : AbstractValidator<UpdateBookCommand> 
 {
-    private readonly IBookTypeRepository _bookTypeRepository;
-    private readonly IAuthorRepository _authorRepository;
-    private readonly IBookRepository _bookRepository;
+    private readonly IUnitOfWork _unitOfWork;
     
-    public UpdateBookCommandValidator(IBookTypeRepository bookTypeRepository, IAuthorRepository authorRepository, IBookRepository bookRepository)
+    public UpdateBookCommandValidator(IUnitOfWork unitOfWork)
     {
-        _bookTypeRepository = bookTypeRepository;
-        _authorRepository = authorRepository;
-        _bookRepository = bookRepository;
+        _unitOfWork = unitOfWork;
 
         RuleFor(x => x.Id)
             .NotEmpty().WithMessage("Id is required.")
@@ -40,16 +36,16 @@ public class UpdateBookCommandValidator : AbstractValidator<UpdateBookCommand>
     
     private async Task<bool> BookExists(int id, CancellationToken cancellationToken)
     {
-        return await _bookRepository.GetBookByIdAsync(id, cancellationToken) != null;
+        return await _unitOfWork.BookRepository.GetBookByIdAsync(id, cancellationToken) != null;
     }
     
     private async Task<bool> AuthorExists(int authorId, CancellationToken cancellationToken)
     {
-        return await _authorRepository.GetAuthorByIdAsync(authorId, cancellationToken) != null;
+        return await _unitOfWork.AuthorRepository.GetAuthorByIdAsync(authorId, cancellationToken) != null;
     }
     
     private async Task<bool> BookTypeExists(int bookTypeId, CancellationToken cancellationToken)
     {
-        return await _bookTypeRepository.GetBookTypeByIdAsync(bookTypeId, cancellationToken) != null;
+        return await _unitOfWork.BookTypeRepository.GetBookTypeByIdAsync(bookTypeId, cancellationToken) != null;
     }
 }

@@ -6,11 +6,11 @@ namespace Application.Features.Authors.Validators;
 
 public class UpdateAuthorCommandValidator : AbstractValidator<UpdateAuthorCommand>
 {
-    private readonly IAuthorRepository _authorRepository;
+    private readonly IUnitOfWork _unitOfWork;
     
-    public UpdateAuthorCommandValidator(IAuthorRepository authorRepository)
+    public UpdateAuthorCommandValidator(IUnitOfWork unitOfWork)
     {
-        _authorRepository = authorRepository;
+        _unitOfWork = unitOfWork;
         
         RuleFor(x => x.Id)
             .NotEmpty().WithMessage("Id is required.")
@@ -22,6 +22,6 @@ public class UpdateAuthorCommandValidator : AbstractValidator<UpdateAuthorComman
     
     private async Task<bool> AuthorExists(int id, CancellationToken cancellationToken)
     {
-        return await _authorRepository.GetAuthorByIdAsync(id, cancellationToken) != null;
+        return await _unitOfWork.AuthorRepository.GetAuthorByIdAsync(id, cancellationToken) != null;
     }
 }

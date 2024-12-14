@@ -8,11 +8,11 @@ namespace Application.Features.Users.Validators;
 
 public class UpdateUserCommandValidator : AbstractValidator<UpdateUserCommand>
 {
-    private readonly IUserRepository _userRepository;
+    private readonly IUnitOfWork _unitOfWork;
     
-    public UpdateUserCommandValidator(IUserRepository userRepository)
+    public UpdateUserCommandValidator(IUnitOfWork unitOfWork)
     {
-        _userRepository = userRepository;
+        _unitOfWork = unitOfWork;
         
         RuleFor(x => x.Id)
             .NotEmpty().WithMessage("Id is required.")
@@ -27,6 +27,6 @@ public class UpdateUserCommandValidator : AbstractValidator<UpdateUserCommand>
     
     private async Task<bool> UserExists(int id, CancellationToken cancellationToken)
     {
-        return await _userRepository.GetUserByIdAsync(id, cancellationToken) != null;
+        return await _unitOfWork.UserRepository.GetUserByIdAsync(id, cancellationToken) != null;
     }
 }

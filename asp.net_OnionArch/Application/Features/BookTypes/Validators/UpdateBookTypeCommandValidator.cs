@@ -6,11 +6,11 @@ namespace Application.Features.BookTypes.Validators;
 
 public class UpdateBookTypeCommandValidator : AbstractValidator<UpdateBookTypeCommand>
 {
-    private readonly IBookTypeRepository _bookTypeRepository;
+    private readonly IUnitOfWork _unitOfWork;
     
-    public UpdateBookTypeCommandValidator(IBookTypeRepository bookTypeRepository)
+    public UpdateBookTypeCommandValidator(IUnitOfWork unitOfWork)
     {
-        _bookTypeRepository = bookTypeRepository;
+        _unitOfWork = unitOfWork;
 
         RuleFor(x => x.Id).NotEmpty().WithMessage("Id is required.")
             .MustAsync(BookTypeExists).WithMessage("Book Type not found.");
@@ -24,6 +24,6 @@ public class UpdateBookTypeCommandValidator : AbstractValidator<UpdateBookTypeCo
     
     private async Task<bool> BookTypeExists(int id, CancellationToken cancellationToken)
     {
-        return await _bookTypeRepository.GetBookTypeByIdAsync(id, cancellationToken) != null;
+        return await _unitOfWork.BookTypeRepository.GetBookTypeByIdAsync(id, cancellationToken) != null;
     }
 }

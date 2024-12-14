@@ -17,3 +17,4 @@ D:\source\asp.net\asp.net_OnionArch\Persistence\obj\Debug\net8.0\refint\Persiste
 D:\source\asp.net\asp.net_OnionArch\Persistence\obj\Debug\net8.0\Persistence.pdb
 D:\source\asp.net\asp.net_OnionArch\Persistence\obj\Debug\net8.0\Persistence.genruntimeconfig.cache
 D:\source\asp.net\asp.net_OnionArch\Persistence\obj\Debug\net8.0\ref\Persistence.dll
+D:\source\asp.net\asp.net_OnionArch\Persistence\obj\Debug\net8.0\Persistence.sourcelink.json

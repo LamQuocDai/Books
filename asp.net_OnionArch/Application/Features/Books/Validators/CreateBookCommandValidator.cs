@@ -6,13 +6,11 @@ namespace Application.Features.Books.Validators;
 
 public class CreateBookCommandValidator : AbstractValidator<CreateBookCommand>
 {
-    private readonly IBookTypeRepository _bookTypeRepository;
-    private readonly IAuthorRepository _authorRepository;
+    private readonly IUnitOfWork _unitOfWork;
     
-    public CreateBookCommandValidator(IBookTypeRepository bookTypeRepository, IAuthorRepository authorRepository)
+    public CreateBookCommandValidator(IUnitOfWork unitOfWork)
     {
-        _bookTypeRepository = bookTypeRepository;
-        _authorRepository = authorRepository;
+        _unitOfWork = unitOfWork;
 
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("Name is required.");
@@ -34,11 +32,11 @@ public class CreateBookCommandValidator : AbstractValidator<CreateBookCommand>
     
     private async Task<bool> AuthorExists(int authorId, CancellationToken cancellationToken)
     {
-        return await _authorRepository.GetAuthorByIdAsync(authorId, cancellationToken) != null;
+        return await _unitOfWork.AuthorRepository.GetAuthorByIdAsync(authorId, cancellationToken) != null;
     }
     
     private async Task<bool> BookTypeExists(int bookTypeId, CancellationToken cancellationToken)
     {
-        return await _bookTypeRepository.GetBookTypeByIdAsync(bookTypeId, cancellationToken) != null;
+        return await _unitOfWork.BookTypeRepository.GetBookTypeByIdAsync(bookTypeId, cancellationToken) != null;
     }
 }

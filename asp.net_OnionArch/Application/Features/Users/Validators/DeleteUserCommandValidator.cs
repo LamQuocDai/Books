@@ -6,11 +6,11 @@ namespace Application.Features.Users.Validators;
 
 public class DeleteUserCommandValidator : AbstractValidator<DeleteUserCommand>
 {
-    private readonly IUserRepository _userRepository;
+    private readonly IUnitOfWork _unitOfWork;
     
-    public DeleteUserCommandValidator(IUserRepository userRepository)
+    public DeleteUserCommandValidator(IUnitOfWork unitOfWork)
     {
-        _userRepository = userRepository;
+        _unitOfWork = unitOfWork;
         
         RuleFor(x => x.Id)
             .NotEmpty().WithMessage("Id is required.")
@@ -19,6 +19,6 @@ public class DeleteUserCommandValidator : AbstractValidator<DeleteUserCommand>
     
     private async Task<bool> UserExists(int id, CancellationToken cancellationToken)
     {
-        return await _userRepository.GetUserByIdAsync(id, cancellationToken) != null;
+        return await _unitOfWork.UserRepository.GetUserByIdAsync(id, cancellationToken) != null;
     }
 }

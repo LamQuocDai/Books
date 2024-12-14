@@ -10,18 +10,18 @@ public class GetAuthorsQuery : IRequest<IEnumerable<AuthorDto>>
 {
     public class GetAuthorsQueryHandler : IRequestHandler<GetAuthorsQuery, IEnumerable<AuthorDto>>
     {
-        private readonly IAuthorRepository _authorRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public GetAuthorsQueryHandler(IAuthorRepository authorRepository, IMapper mapper)
+        public GetAuthorsQueryHandler(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _authorRepository = authorRepository;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
         public async Task<IEnumerable<AuthorDto>> Handle(GetAuthorsQuery request, CancellationToken cancellationToken)
         {
-            var authors = await _authorRepository.GetAuthorsAsync(cancellationToken);
+            var authors = await _unitOfWork.AuthorRepository.GetAuthorsAsync(cancellationToken);
             return _mapper.Map<IEnumerable<AuthorDto>>(authors);
         }
     }

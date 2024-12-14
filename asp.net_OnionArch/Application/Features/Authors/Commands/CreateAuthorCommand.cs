@@ -12,13 +12,11 @@ public class CreateAuthorCommand : IRequest<AuthorDto>
     
     public class CreateAuthorCommandHandler : IRequestHandler<CreateAuthorCommand, AuthorDto>
     {
-        private readonly IAuthorRepository _authorRepository;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         
-        public CreateAuthorCommandHandler(IAuthorRepository authorRepository, IMapper mapper, IUnitOfWork unitOfWork)
+        public CreateAuthorCommandHandler( IMapper mapper, IUnitOfWork unitOfWork)
         {
-            _authorRepository = authorRepository;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
         }
@@ -26,7 +24,7 @@ public class CreateAuthorCommand : IRequest<AuthorDto>
         public async Task<AuthorDto> Handle(CreateAuthorCommand request, CancellationToken cancellationToken)
         {
             var author = _mapper.Map<Author>(request);
-            await _authorRepository.InsertAuthorAsync(author, cancellationToken);
+            await _unitOfWork.AuthorRepository.InsertAuthorAsync(author, cancellationToken);
             await _unitOfWork.CompleteAsync(cancellationToken);
             return _mapper.Map<AuthorDto>(author);
         }

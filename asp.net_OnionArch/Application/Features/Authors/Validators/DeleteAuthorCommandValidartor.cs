@@ -6,11 +6,11 @@ namespace Application.Features.Authors.Validators;
 
 public class DeleteAuthorCommandValidartor : AbstractValidator<DeleteAuthorCommand>
 {
-    private readonly IAuthorRepository _authorRepository;
+    private readonly IUnitOfWork _unitOfWork;
     
-    public DeleteAuthorCommandValidartor(IAuthorRepository authorRepository)
+    public DeleteAuthorCommandValidartor(IUnitOfWork unitOfWork)
     {
-        _authorRepository = authorRepository;
+        _unitOfWork = unitOfWork;
         
         RuleFor(x => x.Id)
             .NotEmpty().WithMessage("Id is required.")
@@ -19,6 +19,6 @@ public class DeleteAuthorCommandValidartor : AbstractValidator<DeleteAuthorComma
     
     private async Task<bool> AuthorExists(int id, CancellationToken cancellationToken)
     {
-        return await _authorRepository.GetAuthorByIdAsync(id, cancellationToken) != null;
+        return await _unitOfWork.AuthorRepository.GetAuthorByIdAsync(id, cancellationToken) != null;
     }
 }
